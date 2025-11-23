@@ -65,6 +65,15 @@ class PlaceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    public function destroy(Place $place): RedirectResponse
+    {
+        $this->authorizePlace($place);
+        $place->delete();
+
+        return redirect()
+            ->route('places.index')
+            ->with('status', 'Place deleted successfully.');
+    }
 
     /**
      * Validate a request payload for storing/updating a place.
