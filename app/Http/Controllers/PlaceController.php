@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Place;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class PlaceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request): View
     {
-        //
+        $places = Place::all();
+
+        return view('places.index', compact('places'));
     }
 
     /**
