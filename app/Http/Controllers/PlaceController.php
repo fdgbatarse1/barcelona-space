@@ -67,6 +67,21 @@ class PlaceController extends Controller
      */
 
     /**
+     * Validate a request payload for storing/updating a place.
+     */
+    protected function validatePlace(Request $request): array
+    {
+        return $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'image' => ['nullable', 'image', 'max:2048'],
+            'latitude' => ['required', 'numeric', 'between:-90,90'],
+            'longitude' => ['required', 'numeric', 'between:-180,180'],
+        ]);
+    }
+
+    /**
      * Ensure the authenticated user owns the given place.
      */
     protected function authorizePlace(Place $place): void
