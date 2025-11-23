@@ -57,9 +57,21 @@ class PlaceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Place $place): RedirectResponse
     {
-        //
+        $this->authorizePlace($place);
+
+        $data = $this->validatePlace($request);
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('places', 'public');
+        }
+
+        $place->update($data);
+
+        return redirect()
+            ->route('places.show', $place)
+            ->with('status', 'Place updated successfully.');
     }
 
     /**
