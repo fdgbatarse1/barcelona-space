@@ -33,9 +33,20 @@ class PlaceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        $data = $this->validatePlace($request);
+        $data['user_id'] = $request->user()->id;
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('places', 'public');
+        }
+
+        $place = Place::create($data);
+
+        return redirect()
+            ->route('places.show', $place)
+            ->with('status', 'Place created successfully.');
     }
 
     /**
