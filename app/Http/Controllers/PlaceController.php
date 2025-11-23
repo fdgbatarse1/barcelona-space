@@ -41,9 +41,9 @@ class PlaceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Place $place): View
     {
-        //
+        return view('places.show', compact('place'));
     }
 
     /**
