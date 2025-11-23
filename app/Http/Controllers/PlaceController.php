@@ -65,8 +65,12 @@ class PlaceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+
+    /**
+     * Ensure the authenticated user owns the given place.
+     */
+    protected function authorizePlace(Place $place): void
     {
-        //
+        abort_if($place->user_id !== Auth::id(), 403);
     }
 }
