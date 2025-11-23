@@ -49,9 +49,11 @@ class PlaceController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Place $place): View
     {
-        //
+        $this->authorizePlace($place);
+
+        return view('places.edit', compact('place'));
     }
 
     /**
