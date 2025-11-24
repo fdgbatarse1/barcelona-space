@@ -9,7 +9,7 @@
             </div>
 
             <div class="flex flex-wrap sm:flex-nowrap gap-2">
-                @if ($place->user_id === auth()->user()->id)
+                @if (auth()->id() === $place->user_id)
                     <a href="{{ route('places.edit', $place) }}"
                         class="inline-flex items-center rounded-md border border-gray-500 px-3 py-1.5 text-gray-500 hover:bg-gray-50 hover:border-gray-700">
                         Edit
@@ -118,9 +118,6 @@
                             </button>
                         </div>
                     </form>
-                @else
-                    <p class="text-gray-500">Please <a href="{{ route('login') }}"
-                            class="text-gray-600 hover:text-gray-700 cursor-pointer">log in</a> to leave a comment.</p>
                 @endauth
 
                 <div class="space-y-1 sm:space-y-2 lg:space-y-4">

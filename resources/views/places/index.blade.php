@@ -25,7 +25,7 @@
                         class="inline-flex items-center rounded-md border border-gray-500 px-3 py-1.5 text-gray-500 hover:bg-gray-50 hover:border-gray-700">
                         View
                     </a>
-                    @if ($place->user_id === auth()->user()->id)
+                    @if (auth()->id() === $place->user_id)
                         <a href="{{ route('places.edit', $place) }}"
                             class="inline-flex items-center rounded-md border border-gray-500 px-3 py-1.5 text-gray-500 hover:bg-gray-50 hover:border-gray-700">
                             Edit
