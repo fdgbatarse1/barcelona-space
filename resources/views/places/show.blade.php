@@ -96,6 +96,81 @@
             <p class="border-t border-gray-500 pt-4 text-gray-500">
                 Published by {{ $place->user->name ?? 'Unknown' }}
             </p>
+
+            <div class="space-y-2 sm:space-y-4 lg:space-y-6">
+                @auth
+                    <form action="{{ route('comments.store', $place) }}" method="POST"
+                        class="space-y-2 sm:space-y-4 lg:space-y-6">
+                        @csrf
+                        <div>
+                            <label for="text" class="text-lg font-semibold text-gray-900">Comments</label>
+                            <textarea name="text" id="text" rows="3"
+                                class="mt-1 block w-full rounded-md border border-gray-300 focus:border-gray-500 focus:ring-gray-500 sm:text-sm px-3 py-2 bg-gray-50 [field-sizing:content] min-h-[120px]"
+                                placeholder="Add a comment..." required></textarea>
+                            @error('text')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit"
+                                class="inline-flex items-center rounded-md border border-gray-500 px-3 py-1.5 text-gray-500 hover:bg-gray-50 hover:border-gray-700">
+                                Post Comment
+                            </button>
+                        </div>
+                    </form>
+                @else
+                    <p class="text-gray-500">Please <a href="{{ route('login') }}"
+                            class="text-gray-600 hover:text-gray-700">log in</a> to leave a comment.</p>
+                @endauth
+
+                <div class="space-y-1 sm:space-y-2 lg:space-y-4">
+                    @forelse ($place->comments->sortByDesc('created_at') as $comment)
+                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-300 border-solid">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">{{ $comment->user->name }}</p>
+                                    <p class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</p>
+                                </div>
+                                @if (auth()->id() === $comment->user_id)
+                                    <div class="flex space-x-2">
+                                        <button
+                                            onclick="document.getElementById('edit-comment-{{ $comment->id }}').classList.toggle('hidden')"
+                                            class="text-sm text-gray-500 hover:text-gray-700">Edit</button>
+                                        <form action="{{ route('comments.destroy', $comment) }}" method="POST"
+                                            onsubmit="return confirm('Are you sure?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="text-sm text-red-500 hover:text-red-700">Delete</button>
+                                        </form>
+                                    </div>
+                                @endif
+                            </div>
+                            <p class="mt-2 text-gray-700">{{ $comment->text }}</p>
+
+                            @if (auth()->id() === $comment->user_id)
+                                <div id="edit-comment-{{ $comment->id }}" class="hidden mt-4">
+                                    <form action="{{ route('comments.update', $comment) }}" method="POST" class="space-y-2">
+                                        @csrf
+                                        @method('PUT')
+                                        <textarea name="text" rows="2"
+                                            class="mt-1 block w-full rounded-md border border-gray-300 focus:border-gray-500 focus:ring-gray-500 sm:text-sm px-3 py-2 bg-gray-50 [field-sizing:content]"
+                                            required>{{ $comment->text }}</textarea>
+                                        <div class="flex justify-end">
+                                            <button type="submit"
+                                                class="inline-flex items-center rounded-md border border-gray-500 px-3 py-1.5 text-gray-500 hover:bg-gray-50 hover:border-gray-700">
+                                                Update
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            @endif
+                        </div>
+                    @empty
+                        <p class="text-gray-500">No comments</p>
+                    @endforelse
+                </div>
+            </div>
         </div>
     </div>
 </x-app-layout>
