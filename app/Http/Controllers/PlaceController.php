@@ -25,6 +25,8 @@ class PlaceController extends Controller
      */
     public function create(): View
     {
+        abort_if(!Auth::check(), 403);
+
         return view('places.create', [
             'place' => new Place(),
         ]);
@@ -35,6 +37,8 @@ class PlaceController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        abort_if(!Auth::check(), 403);
+
         $data = $this->validatePlace($request);
         $data['user_id'] = $request->user()->id;
 
