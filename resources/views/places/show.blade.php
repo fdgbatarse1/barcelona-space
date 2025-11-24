@@ -113,14 +113,14 @@
                         </div>
                         <div class="flex justify-end">
                             <button type="submit"
-                                class="inline-flex items-center rounded-md border border-gray-500 px-3 py-1.5 text-gray-500 hover:bg-gray-50 hover:border-gray-700">
+                                class="inline-flex items-center rounded-md border border-gray-500 px-3 py-1.5 text-gray-500 hover:bg-gray-50 hover:border-gray-700 cursor-pointer">
                                 Post Comment
                             </button>
                         </div>
                     </form>
                 @else
                     <p class="text-gray-500">Please <a href="{{ route('login') }}"
-                            class="text-gray-600 hover:text-gray-700">log in</a> to leave a comment.</p>
+                            class="text-gray-600 hover:text-gray-700 cursor-pointer">log in</a> to leave a comment.</p>
                 @endauth
 
                 <div class="space-y-1 sm:space-y-2 lg:space-y-4">
@@ -135,13 +135,13 @@
                                     <div class="flex space-x-2">
                                         <button
                                             onclick="document.getElementById('edit-comment-{{ $comment->id }}').classList.toggle('hidden')"
-                                            class="text-sm text-gray-500 hover:text-gray-700">Edit</button>
+                                            class="text-sm text-gray-500 hover:text-gray-700 cursor-pointer">Edit</button>
                                         <form action="{{ route('comments.destroy', $comment) }}" method="POST"
                                             onsubmit="return confirm('Are you sure?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="text-sm text-red-500 hover:text-red-700">Delete</button>
+                                                class="text-sm text-red-500 hover:text-red-700 cursor-pointer">Delete</button>
                                         </form>
                                     </div>
                                 @endif
@@ -158,7 +158,7 @@
                                             required>{{ $comment->text }}</textarea>
                                         <div class="flex justify-end">
                                             <button type="submit"
-                                                class="inline-flex items-center rounded-md border border-gray-500 px-3 py-1.5 text-gray-500 hover:bg-gray-50 hover:border-gray-700">
+                                                class="inline-flex items-center rounded-md border border-gray-500 px-3 py-1.5 text-gray-500 hover:bg-gray-50 hover:border-gray-700 cursor-pointer">
                                                 Update
                                             </button>
                                         </div>
