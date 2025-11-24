@@ -46,11 +46,15 @@
             <div class="py-12 text-center text-gray-500">
                 <p>You have not added any places yet.</p>
                 <p class="mt-2">
-                    <a href="{{ route('places.create') }}" class="text-indigo-600 hover:text-indigo-500">
+                    <a href="{{ route('places.create') }}" class="text-gray-600 hover:text-gray-500">
                         Create your first place
                     </a>
                 </p>
             </div>
         @endforelse
+
+        <div class="mt-6">
+            {{ $places->links() }}
+        </div>
     </div>
 </x-app-layout>

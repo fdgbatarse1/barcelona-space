@@ -121,7 +121,7 @@
                 @endauth
 
                 <div class="space-y-1 sm:space-y-2 lg:space-y-4">
-                    @forelse ($place->comments->sortByDesc('created_at') as $comment)
+                    @forelse ($comments as $comment)
                         <div class="bg-gray-50 rounded-lg p-4 border border-gray-300 border-solid">
                             <div class="flex justify-between items-start">
                                 <div>
@@ -166,6 +166,10 @@
                     @empty
                         <p class="text-gray-500">No comments</p>
                     @endforelse
+
+                    <div class="mt-6">
+                        {{ $comments->links() }}
+                    </div>
                 </div>
             </div>
         </div>
