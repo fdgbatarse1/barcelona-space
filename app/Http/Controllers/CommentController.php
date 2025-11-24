@@ -34,4 +34,13 @@ class CommentController extends Controller
 
         return back()->with('success', 'Comment updated successfully.');
     }
+
+    public function destroy(Comment $comment)
+    {
+        abort_if($comment->user_id !== auth()->id(), 403);
+
+        $comment->delete();
+
+        return back()->with('success', 'Comment deleted successfully.');
+    }
 }
