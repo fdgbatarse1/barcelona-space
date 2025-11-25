@@ -15,7 +15,7 @@ class PlaceController extends Controller
      */
     public function index(Request $request): View
     {
-        $places = Place::simplePaginate(10);
+        $places = Place::latest()->paginate(10);
 
         return view('places.index', compact('places'));
     }
@@ -58,7 +58,7 @@ class PlaceController extends Controller
      */
     public function show(Place $place): View
     {
-        $comments = $place->comments()->latest()->simplePaginate(5);
+        $comments = $place->comments()->latest()->paginate(5);
         return view('places.show', compact('place', 'comments'));
     }
 
