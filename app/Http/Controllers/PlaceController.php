@@ -58,7 +58,8 @@ class PlaceController extends Controller
      */
     public function show(Place $place): View
     {
-        $comments = $place->comments()->latest()->paginate(5);
+        $place->load('user');
+        $comments = $place->comments()->with('user')->latest()->paginate(5);
         return view('places.show', compact('place', 'comments'));
     }
 
