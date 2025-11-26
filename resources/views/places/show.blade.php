@@ -83,9 +83,9 @@
             </div>
             <div class="flex flex-col space-y-2">
                 <h3 class="text-lg font-semibold text-gray-900">Description</h3>
-                <p class="text-gray-700">
-                    {{ $place->description ?: 'No description provided.' }}
-                </p>
+                <div class="text-gray-700 rich-text-content">
+                    {!! $place->description ?: 'No description provided.' !!}
+                </div>
             </div>
             <div class="flex flex-col space-y-2">
                 <h3 class="text-lg font-semibold text-gray-900">Address</h3>
@@ -175,3 +175,25 @@
         </div>
     </div>
 </x-app-layout>
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof tinymce !== 'undefined') {
+                tinymce.init({
+                    selector: 'textarea#text',
+                    height: 200,
+                    menubar: false,
+                    plugins: [
+                        'advlist autolink lists link charmap',
+                        'searchreplace visualblocks code',
+                        'insertdatetime paste code help wordcount'
+                    ],
+                    toolbar: 'undo redo | formatselect | bold italic | \
+                                    bullist numlist | removeformat',
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                });
+            }
+        });
+    </script>
+@endpush

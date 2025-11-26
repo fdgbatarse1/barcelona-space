@@ -13,7 +13,7 @@
                 <div>
                     <h3 class="text-lg text-gray-700">{{ $place->name }}</h3>
                     <p class="text-base text-gray-600 line-clamp-2">
-                        {{ $place->description ?? 'No description provided' }}
+                        {{ strip_tags($place->description) ?? 'No description provided' }}
                     </p>
                     <p class="text-sm text-gray-500">
                         Updated {{ $place->updated_at->diffForHumans() }}
