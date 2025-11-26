@@ -19,6 +19,8 @@ class CommentController extends Controller
             'user_id' => $request->user()->id,
         ]);
 
+        cache()->forget('place_' . $place->id . '_comments_page_1');
+
         return back()->with('success', 'Comment added successfully.');
     }
 
@@ -32,6 +34,8 @@ class CommentController extends Controller
 
         $comment->update($validated);
 
+        cache()->forget('place_' . $comment->place_id . '_comments_page_1');
+
         return back()->with('success', 'Comment updated successfully.');
     }
 
@@ -40,6 +44,8 @@ class CommentController extends Controller
         abort_if($comment->user_id !== auth()->id(), 403);
 
         $comment->delete();
+
+        cache()->forget('place_' . $comment->place_id . '_comments_page_1');
 
         return back()->with('success', 'Comment deleted successfully.');
     }

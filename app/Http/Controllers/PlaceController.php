@@ -15,7 +15,10 @@ class PlaceController extends Controller
      */
     public function index(Request $request): View
     {
-        $places = Place::latest()->paginate(10);
+        $page = $request->get('page', 1);
+        $places = cache()->remember('places_index_page_' . $page, config('app.cache_ttl'), function () {
+            return Place::latest()->paginate(10);
+        });
 
         return view('places.index', compact('places'));
     }
@@ -48,6 +51,8 @@ class PlaceController extends Controller
 
         $place = Place::create($data);
 
+        cache()->forget('places_index_page_1');
+
         return redirect()
             ->route('places.show', $place)
             ->with('status', 'Place created successfully.');
@@ -59,7 +64,12 @@ class PlaceController extends Controller
     public function show(Place $place): View
     {
         $place->load('user');
-        $comments = $place->comments()->with('user')->latest()->paginate(5);
+
+        $page = request()->get('page', 1);
+        $comments = cache()->remember('place_' . $place->id . '_comments_page_' . $page, config('app.cache_ttl'), function () use ($place) {
+            return $place->comments()->with('user')->latest()->paginate(5);
+        });
+
         return view('places.show', compact('place', 'comments'));
     }
 
@@ -88,6 +98,8 @@ class PlaceController extends Controller
 
         $place->update($data);
 
+        cache()->forget('places_index_page_1');
+
         return redirect()
             ->route('places.show', $place)
             ->with('status', 'Place updated successfully.');
@@ -100,6 +112,8 @@ class PlaceController extends Controller
     {
         $this->authorizePlace($place);
         $place->delete();
+
+        cache()->forget('places_index_page_1');
 
         return redirect()
             ->route('places.index')
