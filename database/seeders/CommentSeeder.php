@@ -12,6 +12,18 @@ class CommentSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Comment::factory(10)->create();
+        $users = \App\Models\User::all();
+        $places = \App\Models\Place::all();
+
+        if ($users->isEmpty() || $places->isEmpty()) {
+            return;
+        }
+
+        foreach ($places as $place) {
+            \App\Models\Comment::factory(rand(3, 5))->create([
+                'place_id' => $place->id,
+                'user_id' => $users->random()->id,
+            ]);
+        }
     }
 }
