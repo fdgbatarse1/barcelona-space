@@ -46,7 +46,7 @@ class PlaceController extends Controller
         $data['user_id'] = $request->user()->id;
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('places', 'public');
+            $data['image'] = $request->file('image')->store('places');
         }
 
         $place = Place::create($data);
@@ -93,7 +93,7 @@ class PlaceController extends Controller
         $data = $this->validatePlace($request);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('places', 'public');
+            $data['image'] = $request->file('image')->store('places');
         }
 
         $place->update($data);

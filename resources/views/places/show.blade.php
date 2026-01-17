@@ -41,7 +41,7 @@
                 <div class="sm:w-1/2">
                     @if ($place->image)
                         <div class="aspect-video overflow-hidden rounded-lg bg-gray-100">
-                            <img src="{{ asset('storage/' . $place->image) }}" alt="{{ $place->name }}"
+                            <img src="{{ Storage::url($place->image) }}" alt="{{ $place->name }}"
                                 class="h-full w-full object-cover" />
                         </div>
                     @else
@@ -190,7 +190,7 @@
                         'insertdatetime paste code help wordcount'
                     ],
                     toolbar: 'undo redo | formatselect | bold italic | \
-                                    bullist numlist | removeformat',
+                                        bullist numlist | removeformat',
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                 });
             }
