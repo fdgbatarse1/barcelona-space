@@ -163,6 +163,33 @@
         </main>
     </div>
 
+    <script src="https://browser.sentry-cdn.com/8.33.1/bundle.tracing.min.js" crossorigin="anonymous"></script>
+    <script>
+        if (window.Sentry) {
+            const dsn = @json(config('sentry.dsn'));
+
+            if (dsn) {
+                const user = @json(auth()->check() ? [
+                    'id' => auth()->id(),
+                    'email' => auth()->user()->email,
+                ] : null);
+
+                window.Sentry.init({
+                    dsn,
+                    environment: @json(config('app.env')),
+                    release: @json(config('sentry.release')),
+                    integrations: [window.Sentry.browserTracingIntegration()],
+                    tracesSampleRate: @json(config('sentry.traces_sample_rate') ?? 0),
+                    sendDefaultPii: @json((bool) config('sentry.send_default_pii')),
+                });
+
+                if (user) {
+                    window.Sentry.setUser(user);
+                }
+            }
+        }
+    </script>
+
     @stack('scripts')
 </body>
 
