@@ -7,8 +7,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use Sentry\Breadcrumb;
-use Sentry\Laravel\Facades\Sentry;
 
 class PlaceController extends Controller
 {
@@ -54,8 +52,6 @@ class PlaceController extends Controller
         $place = Place::create($data);
 
         cache()->forget('places_index_page_1');
-
-        $this->addPlaceBreadcrumb('created', $place, $request->user()?->id);
 
         return redirect()
             ->route('places.show', $place)
@@ -104,8 +100,6 @@ class PlaceController extends Controller
 
         cache()->forget('places_index_page_1');
 
-        $this->addPlaceBreadcrumb('updated', $place, $request->user()?->id);
-
         return redirect()
             ->route('places.show', $place)
             ->with('status', 'Place updated successfully.');
@@ -117,8 +111,6 @@ class PlaceController extends Controller
     public function destroy(Place $place): RedirectResponse
     {
         $this->authorizePlace($place);
-
-        $this->addPlaceBreadcrumb('deleted', $place, Auth::id());
         $place->delete();
 
         cache()->forget('places_index_page_1');
@@ -149,26 +141,5 @@ class PlaceController extends Controller
     protected function authorizePlace(Place $place): void
     {
         abort_if($place->user_id !== Auth::id(), 403);
-    }
-
-    /**
-     * Record a Sentry breadcrumb for key place actions.
-     */
-    protected function addPlaceBreadcrumb(string $action, Place $place, ?int $userId = null): void
-    {
-        if (!app()->bound('sentry')) {
-            return;
-        }
-
-        Sentry::addBreadcrumb(new Breadcrumb(
-            Breadcrumb::LEVEL_INFO,
-            Breadcrumb::TYPE_DEFAULT,
-            "place.{$action}",
-            "Place {$action}",
-            [
-                'place_id' => $place->id,
-                'user_id' => $userId,
-            ]
-        ));
     }
 }
