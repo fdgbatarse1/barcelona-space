@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Sentry\Breadcrumb;
-use Sentry\Laravel\Facades\Sentry;
 use Sentry\State\Scope;
 
 class SentryContext
@@ -16,21 +15,22 @@ class SentryContext
     public function handle(Request $request, Closure $next)
     {
         if (app()->bound('sentry')) {
+            $hub = app('sentry');
             $user = $request->user();
             $route = $request->route();
 
-            Sentry::configureScope(function (Scope $scope) use ($user): void {
+            $hub->configureScope(function (Scope $scope) use ($user): void {
                 if ($user) {
                     $scope->setUser([
                         'id' => $user->id,
                         'email' => $user->email,
                     ]);
                 } else {
-                    $scope->setUser(null);
+                    $scope->setUser([]);
                 }
             });
 
-            Sentry::addBreadcrumb(new Breadcrumb(
+            $hub->addBreadcrumb(new Breadcrumb(
                 Breadcrumb::LEVEL_INFO,
                 Breadcrumb::TYPE_NAVIGATION,
                 'request',

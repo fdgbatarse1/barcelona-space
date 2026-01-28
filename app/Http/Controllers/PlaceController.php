@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Sentry\Breadcrumb;
-use Sentry\Laravel\Facades\Sentry;
 
 class PlaceController extends Controller
 {
@@ -160,7 +159,9 @@ class PlaceController extends Controller
             return;
         }
 
-        Sentry::addBreadcrumb(new Breadcrumb(
+        $hub = app('sentry');
+
+        $hub->addBreadcrumb(new Breadcrumb(
             Breadcrumb::LEVEL_INFO,
             Breadcrumb::TYPE_DEFAULT,
             "place.{$action}",
