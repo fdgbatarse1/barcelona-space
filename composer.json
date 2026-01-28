@@ -10,6 +10,7 @@
         "laravel/framework": "^12.37",
         "laravel/tinker": "^2.10.1",
         "league/flysystem-aws-s3-v3": "3.0",
+        "sentry/sentry-laravel": "^4.20",
         "symfony/http-client": "^8.0",
         "symfony/sendgrid-mailer": "^7.4"
     },
