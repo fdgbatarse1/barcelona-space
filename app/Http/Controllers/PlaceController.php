@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\LogsToSentry;
 use App\Models\Place;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use Sentry\Breadcrumb;
 
 class PlaceController extends Controller
 {
+    use LogsToSentry;
+
     /**
      * Display a listing of the resource.
      */
@@ -54,7 +56,9 @@ class PlaceController extends Controller
 
         cache()->forget('places_index_page_1');
 
-        $this->addPlaceBreadcrumb('created', $place, $request->user()?->id);
+        $context = ['place_id' => $place->id, 'user_id' => $request->user()->id];
+        $this->addBreadcrumb('place.created', 'Place created', $context);
+        $this->logAction('info', 'Place created', $context);
 
         return redirect()
             ->route('places.show', $place)
@@ -103,7 +107,9 @@ class PlaceController extends Controller
 
         cache()->forget('places_index_page_1');
 
-        $this->addPlaceBreadcrumb('updated', $place, $request->user()?->id);
+        $context = ['place_id' => $place->id, 'user_id' => $request->user()?->id];
+        $this->addBreadcrumb('place.updated', 'Place updated', $context);
+        $this->logAction('info', 'Place updated', $context);
 
         return redirect()
             ->route('places.show', $place)
@@ -117,7 +123,10 @@ class PlaceController extends Controller
     {
         $this->authorizePlace($place);
 
-        $this->addPlaceBreadcrumb('deleted', $place, Auth::id());
+        $context = ['place_id' => $place->id, 'user_id' => Auth::id()];
+        $this->addBreadcrumb('place.deleted', 'Place deleted', $context);
+        $this->logAction('info', 'Place deleted', $context);
+
         $place->delete();
 
         cache()->forget('places_index_page_1');
@@ -148,28 +157,5 @@ class PlaceController extends Controller
     protected function authorizePlace(Place $place): void
     {
         abort_if($place->user_id !== Auth::id(), 403);
-    }
-
-    /**
-     * Record a Sentry breadcrumb for key place actions.
-     */
-    protected function addPlaceBreadcrumb(string $action, Place $place, ?int $userId = null): void
-    {
-        if (!app()->bound('sentry')) {
-            return;
-        }
-
-        $hub = app('sentry');
-
-        $hub->addBreadcrumb(new Breadcrumb(
-            Breadcrumb::LEVEL_INFO,
-            Breadcrumb::TYPE_DEFAULT,
-            "place.{$action}",
-            "Place {$action}",
-            [
-                'place_id' => $place->id,
-                'user_id' => $userId,
-            ]
-        ));
     }
 }

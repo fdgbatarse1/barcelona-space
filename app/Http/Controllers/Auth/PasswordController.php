@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Concerns\LogsToSentry;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -10,6 +11,8 @@ use Illuminate\Validation\Rules\Password;
 
 class PasswordController extends Controller
 {
+    use LogsToSentry;
+
     /**
      * Update the user's password.
      */
@@ -23,6 +26,10 @@ class PasswordController extends Controller
         $request->user()->update([
             'password' => Hash::make($validated['password']),
         ]);
+
+        $context = ['user_id' => $request->user()->id];
+        $this->addBreadcrumb('auth.password_changed', 'User changed password', $context);
+        $this->logAction('info', 'User changed password', $context);
 
         return back()->with('status', 'password-updated');
     }

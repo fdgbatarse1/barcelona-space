@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Userzone;
 
+use App\Http\Controllers\Concerns\LogsToSentry;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
@@ -12,6 +13,8 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    use LogsToSentry;
+
     /**
      * Display the user's profile form.
      */
@@ -27,6 +30,8 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        $emailChanged = $request->user()->isDirty('email');
+
         $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {
@@ -34,6 +39,10 @@ class ProfileController extends Controller
         }
 
         $request->user()->save();
+
+        $context = ['user_id' => $request->user()->id, 'email_changed' => $emailChanged];
+        $this->addBreadcrumb('profile.updated', 'Profile updated', $context);
+        $this->logAction('info', 'Profile updated', $context);
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
@@ -48,6 +57,10 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        $context = ['user_id' => $user->id];
+        $this->addBreadcrumb('profile.deleted', 'Account deleted', $context);
+        $this->logAction('warning', 'Account deleted', $context);
 
         Auth::logout();
 
