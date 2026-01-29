@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Concerns\LogsToSentry;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
@@ -11,6 +12,8 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
+    use LogsToSentry;
+
     /**
      * Display the login view.
      */
@@ -28,6 +31,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $context = ['user_id' => $request->user()->id];
+        $this->addBreadcrumb('auth.login', 'User logged in', $context);
+        $this->logAction('info', 'User logged in', $context);
+
         return redirect()->intended(route('places.index', absolute: false));
     }
 
@@ -36,6 +43,10 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $context = ['user_id' => $request->user()?->id];
+        $this->addBreadcrumb('auth.logout', 'User logged out', $context);
+        $this->logAction('info', 'User logged out', $context);
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\LogsToSentry;
 use App\Models\Place;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -10,6 +11,8 @@ use Illuminate\View\View;
 
 class PlaceController extends Controller
 {
+    use LogsToSentry;
+
     /**
      * Display a listing of the resource.
      */
@@ -52,6 +55,10 @@ class PlaceController extends Controller
         $place = Place::create($data);
 
         cache()->forget('places_index_page_1');
+
+        $context = ['place_id' => $place->id, 'user_id' => $request->user()->id];
+        $this->addBreadcrumb('place.created', 'Place created', $context);
+        $this->logAction('info', 'Place created', $context);
 
         return redirect()
             ->route('places.show', $place)
@@ -100,6 +107,10 @@ class PlaceController extends Controller
 
         cache()->forget('places_index_page_1');
 
+        $context = ['place_id' => $place->id, 'user_id' => $request->user()?->id];
+        $this->addBreadcrumb('place.updated', 'Place updated', $context);
+        $this->logAction('info', 'Place updated', $context);
+
         return redirect()
             ->route('places.show', $place)
             ->with('status', 'Place updated successfully.');
@@ -111,6 +122,11 @@ class PlaceController extends Controller
     public function destroy(Place $place): RedirectResponse
     {
         $this->authorizePlace($place);
+
+        $context = ['place_id' => $place->id, 'user_id' => Auth::id()];
+        $this->addBreadcrumb('place.deleted', 'Place deleted', $context);
+        $this->logAction('info', 'Place deleted', $context);
+
         $place->delete();
 
         cache()->forget('places_index_page_1');

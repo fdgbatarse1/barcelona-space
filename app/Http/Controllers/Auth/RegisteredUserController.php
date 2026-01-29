@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Concerns\LogsToSentry;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -14,6 +15,8 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
+    use LogsToSentry;
+
     /**
      * Display the registration view.
      */
@@ -44,6 +47,10 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+
+        $context = ['user_id' => $user->id];
+        $this->addBreadcrumb('auth.registered', 'User registered', $context);
+        $this->logAction('info', 'User registered', $context);
 
         return redirect(route('places.index', absolute: false));
     }
