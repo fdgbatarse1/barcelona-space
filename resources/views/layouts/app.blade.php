@@ -143,7 +143,7 @@
         }
     </style>
 
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.1/dist/cdn.min.js"></script>
+    @livewireStyles
 </head>
 
 <body class="font-sans antialiased">
@@ -191,6 +191,8 @@
     </script>
 
     @stack('scripts')
+
+    @livewireScripts
 </body>
 
 </html>

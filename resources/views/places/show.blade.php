@@ -29,16 +29,13 @@
     </x-slot>
     <div class="max-w-7xl mx-auto py-2 sm:py-4 lg:py-6 px-4 sm:px-6 lg:px-8">
         <div class="space-y-2 sm:space-y-4 lg:space-y-6">
-            <div class="flex justify-between">
-                <div>
-                    <h2 class="font-semibold text-xl text-gray-700 leading-tight">
-                        {{ $place->name }}
-                    </h2>
-                    <p class="text-sm text-gray-500">
-                        Created {{ $place->created_at->toDayDateTimeString() }}
-                    </p>
-                </div>
-                <x-weather-widget :latitude="$place->latitude" :longitude="$place->longitude" />
+            <div>
+                <h2 class="font-semibold text-xl text-gray-700 leading-tight">
+                    {{ $place->name }}
+                </h2>
+                <p class="text-sm text-gray-500">
+                    Created {{ $place->created_at->toDayDateTimeString() }}
+                </p>
             </div>
             <div class="flex flex-col gap-2 sm:flex-row">
                 <div class="sm:w-1/2">
@@ -60,8 +57,15 @@
                             </div>
                         </div>
                     @endif
+
                 </div>
-                <div class="flex flex-col space-y-2 sm:w-1/2">
+                <div class="flex flex-col space-y-2 sm:w-1/2 relative">
+                    {{-- Weather overlay --}}
+                    <div class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1.5">
+                        <livewire:weather-provider-selector />
+                        <livewire:weather-display :latitude="$place->latitude" :longitude="$place->longitude" />
+                    </div>
+
                     @if (config('services.google.maps_api_key'))
                         <div class="w-full aspect-video rounded-lg overflow-hidden border border-gray-300">
                             <iframe width="100%" height="100%" style="border:0" loading="lazy" allowfullscreen
@@ -193,7 +197,7 @@
                         'insertdatetime paste code help wordcount'
                     ],
                     toolbar: 'undo redo | formatselect | bold italic | \
-                                                    bullist numlist | removeformat',
+                                                                            bullist numlist | removeformat',
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                 });
             }
