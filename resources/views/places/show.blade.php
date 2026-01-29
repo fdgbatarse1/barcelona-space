@@ -29,13 +29,16 @@
     </x-slot>
     <div class="max-w-7xl mx-auto py-2 sm:py-4 lg:py-6 px-4 sm:px-6 lg:px-8">
         <div class="space-y-2 sm:space-y-4 lg:space-y-6">
-            <div>
-                <h2 class="font-semibold text-xl text-gray-700 leading-tight">
-                    {{ $place->name }}
-                </h2>
-                <p class="text-sm text-gray-500">
-                    Created {{ $place->created_at->toDayDateTimeString() }}
-                </p>
+            <div class="flex justify-between">
+                <div>
+                    <h2 class="font-semibold text-xl text-gray-700 leading-tight">
+                        {{ $place->name }}
+                    </h2>
+                    <p class="text-sm text-gray-500">
+                        Created {{ $place->created_at->toDayDateTimeString() }}
+                    </p>
+                </div>
+                <x-weather-widget :latitude="$place->latitude" :longitude="$place->longitude" />
             </div>
             <div class="flex flex-col gap-2 sm:flex-row">
                 <div class="sm:w-1/2">
@@ -190,7 +193,7 @@
                         'insertdatetime paste code help wordcount'
                     ],
                     toolbar: 'undo redo | formatselect | bold italic | \
-                                        bullist numlist | removeformat',
+                                                    bullist numlist | removeformat',
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                 });
             }

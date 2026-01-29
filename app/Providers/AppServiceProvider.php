@@ -15,7 +15,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(\App\Contracts\WeatherProvider::class, function ($app) {
+            return match (config('services.weather.provider')) {
+                'openweathermap' => new \App\Services\Weather\OpenWeatherMapProvider(
+                    config('services.openweathermap.key', ''),
+                ),
+                'openmeteo' => new \App\Services\Weather\OpenMeteoProvider(),
+                default => new \App\Services\Weather\OpenWeatherMapProvider(
+                    config('services.openweathermap.key', ''),
+                ),
+            };
+        });
     }
 
     /**

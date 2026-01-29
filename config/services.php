@@ -43,4 +43,12 @@ return [
         'key' => env('SENDGRID_API_KEY'),
     ],
 
+    'weather' => [
+        'provider' => env('WEATHER_PROVIDER', 'openweathermap'),
+    ],
+
+    'openweathermap' => [
+        'key' => env('OPENWEATHERMAP_API_KEY'),
+    ],
+
 ];
