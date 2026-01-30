@@ -3,5 +3,6 @@
 it('returns a successful response', function () {
     $response = $this->get('/');
 
-    $response->assertStatus(200);
+    // The app redirects / to /places
+    $response->assertRedirect('/places');
 });

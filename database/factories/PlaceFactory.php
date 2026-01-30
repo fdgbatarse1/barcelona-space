@@ -22,9 +22,30 @@ class PlaceFactory extends Factory
             'name' => fake()->city(),
             'description' => fake()->paragraph(),
             'address' => fake()->address(),
-            'image' => 'places/' . fake()->image(storage_path('app/public/places'), 640, 480, null, false),
+            'image' => null,
             'latitude' => fake()->latitude(),
             'longitude' => fake()->longitude(),
         ];
+    }
+
+    /**
+     * Indicate that the place has an image.
+     */
+    public function withImage(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'image' => 'places/test-image.jpg',
+        ]);
+    }
+
+    /**
+     * Indicate specific coordinates for the place.
+     */
+    public function withCoordinates(float $latitude, float $longitude): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+        ]);
     }
 }
